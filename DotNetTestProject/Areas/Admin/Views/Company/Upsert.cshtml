@@ -1,0 +1,78 @@
+@model Company
+
+<form method="post" enctype="multipart/form-data">
+    <input asp-for="Id" hidden />
+    <div class="row">
+        <div class="col-12">
+            <div class="border p-3 mt-4">
+                <div class="row pb-2">
+                    <h2 class="text-primary">@(Model.Id!=0?"Update":"Create") company</h2>
+                    <hr/>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Name" class="mb-1"></label>
+                    <input asp-for="Name" type="text" class="form-control">
+                    <span asp-validation-for="Name" class="text-danger mt-1"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="StreetAddress" class="mb-1"></label>
+                    <input asp-for="StreetAddress" type="text" class="form-control">
+                    <span asp-validation-for="StreetAddress" class="text-danger mt-1"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="City" class="mb-1"></label>
+                    <input asp-for="City" type="text" class="form-control">
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="PostalCode" class="mb-1"></label>
+                    <input asp-for="PostalCode" type="text" class="form-control">
+                    <span asp-validation-for="PostalCode" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="PhoneNumber" class="mb-1"></label>
+                    <input asp-for="PhoneNumber" type="text" class="form-control">
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="State" class="mb-1"></label>
+                    <input asp-for="State" type="text" class="form-control">
+                    <span asp-validation-for="State" class="text-danger"></span>
+                </div>
+            
+                <div asp-validation-summary="All"></div>
+                <div class="row">
+                    <div class="col-6">
+                        @if (Model.Id != 0)
+                        {
+                            <button
+                                type="submit"
+                                class="btn btn-primary form-control">
+                                Update
+                            </button>
+                        }
+                        else
+                        {
+                            <button
+                                type="submit"
+                                class="btn btn-primary form-control">
+                                Create
+                            </button>
+                        }
+                    </div>
+                    <div class="col-6">
+                        <a asp-controller="Company" asp-action="Index"
+                           class="btn btn-outline-secondary form-control">Back To List</a>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial"/>
+    }
+}
