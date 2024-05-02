@@ -1,10 +1,11 @@
 using DotNetTestProject.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace DotNetTestProject.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext
 {
     protected readonly IConfiguration Configuration;
 
@@ -19,9 +20,12 @@ public class AppDbContext : DbContext
     }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Product> Products { get; set; }
+    public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+        
         modelBuilder.Entity<Category>().HasData(
             new Category {Id = 1, Name = "Action", DisplayOrder = 1},
             new Category {Id = 2, Name = "SciF", DisplayOrder = 2},
