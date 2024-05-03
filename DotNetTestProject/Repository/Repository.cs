@@ -24,16 +24,8 @@ public class Repository<T> : IRepository<T> where T : class
     public T Get(System.Linq.Expressions.Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false)
     {
         IQueryable<T> query = dbSet;
-        
-        if (tracked = true)
-        {
-            query = dbSet;
-        }
-        else
-        { 
-            query = dbSet.AsNoTracking();
-        }
-        
+
+        query = query.Where(filter);
         
         if (!string.IsNullOrEmpty(includeProperties))
         {
@@ -47,10 +39,12 @@ public class Repository<T> : IRepository<T> where T : class
     public IEnumerable<T> GetAll(System.Linq.Expressions.Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
     {
         IQueryable<T> query = dbSet;
+        
         if (filter != null)
         {
             query = query.Where(filter);
         }
+        
         if (!string.IsNullOrEmpty(includeProperties))
         {
             foreach (var includeProp in includeProperties.Split(",", StringSplitOptions.RemoveEmptyEntries))

@@ -28,13 +28,13 @@ public class HomeController : Controller
     }
     public IActionResult Details(int id)
     {
-        Product product = _unitOfWork.Product.Get(u => u.Id == id, includeProperties: "Category");
-        
+        // Product product = _unitOfWork.Product.Get(u => u.Id == id, includeProperties: "Category");
+        Console.WriteLine(id);
         ShoppingCart cart = new ShoppingCart
         {
-            Product = product,
+            Product = _unitOfWork.Product.Get(u => u.Id == id, includeProperties: "Category"),
             Count = 1,
-            ProductId = product.Id
+            ProductId = id
         };
         return View(cart);
     }

@@ -472,3 +472,7 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/```
+
+appsettings.json
+**/appsettings.json
+DotNetTestProject/appsettings.json
