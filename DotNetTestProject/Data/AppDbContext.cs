@@ -1,4 +1,5 @@
 using DotNetTestProject.Models;
+using DotNetTestProject.Models.ViewModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +23,7 @@ public class AppDbContext : IdentityDbContext
     public DbSet<Product> Products { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+    public DbSet<ShoppingCart> ShoppingCarts { get; set; }
     
 
     protected void OnModelCreating(ModelBuilder modelBuilder)

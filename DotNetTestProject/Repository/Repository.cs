@@ -21,30 +21,42 @@ public class Repository<T> : IRepository<T> where T : class
     {
         dbSet.Add(entity);
     }
-    public T Get(System.Linq.Expressions.Expression<Func<T, bool>> filter, string? includeProperties = null)
+    public T Get(System.Linq.Expressions.Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false)
     {
         IQueryable<T> query = dbSet;
-        query = query.Where(filter);
-        if (!string.IsNullOrEmpty(includeProperties))
+        
+        if (tracked = true)
         {
-            foreach (var includeProp in includeProperties.Split(",", StringSplitOptions.RemoveEmptyEntries))
-            {
-                query = query.Include(includeProp);
-            }
-            
+            query = dbSet;
         }
-        return query.FirstOrDefault();
-    }
-    public IEnumerable<T> GetAll(string? includeProperties = null)
-    {
-        IQueryable<T> query = dbSet;
+        else
+        { 
+            query = dbSet.AsNoTracking();
+        }
+        
+        
         if (!string.IsNullOrEmpty(includeProperties))
         {
             foreach (var includeProp in includeProperties.Split(",", StringSplitOptions.RemoveEmptyEntries))
             {
                 query = query.Include(includeProp);
             }
-            
+        }
+        return query.FirstOrDefault(); 
+    }
+    public IEnumerable<T> GetAll(System.Linq.Expressions.Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
+    {
+        IQueryable<T> query = dbSet;
+        if (filter != null)
+        {
+            query = query.Where(filter);
+        }
+        if (!string.IsNullOrEmpty(includeProperties))
+        {
+            foreach (var includeProp in includeProperties.Split(",", StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProp);
+            }
         }
         return query.ToList();
     }

@@ -1,7 +1,10 @@
 using System.Diagnostics;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using DotNetTestProject.Models;
+using DotNetTestProject.Models.ViewModels;
 using DotNetTestProject.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DotNetTestProject.Areas.Customer.Controllers;
 
@@ -27,7 +30,38 @@ public class HomeController : Controller
     {
         Product product = _unitOfWork.Product.Get(u => u.Id == id, includeProperties: "Category");
         
-        return View(product);
+        ShoppingCart cart = new ShoppingCart
+        {
+            Product = product,
+            Count = 1,
+            ProductId = product.Id
+        };
+        return View(cart);
+    }
+    [HttpPost]
+    [Authorize]
+    public IActionResult Details(ShoppingCart shoppingCart)
+    {
+        var claimsIdentity = (ClaimsIdentity)User.Identity;
+        var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+        shoppingCart.ApplicationUserId = userId;
+
+        ShoppingCart cartFromDb = _unitOfWork.ShoppingCart
+            .Get(x => x.ApplicationUserId == userId && x.ProductId == shoppingCart.ProductId);
+
+        if (cartFromDb != null)
+        {
+            cartFromDb.Count += shoppingCart.Count;
+            _unitOfWork.ShoppingCart.Update(cartFromDb);
+        }
+        else
+        {
+            _unitOfWork.ShoppingCart.Add(shoppingCart);
+
+        }
+        _unitOfWork.Save();
+        TempData["success"] = "Cart updated successfully";
+        return RedirectToAction(nameof(Index));
     }
 
     public IActionResult Privacy()
