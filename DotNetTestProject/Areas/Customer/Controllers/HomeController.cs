@@ -26,15 +26,14 @@ public class HomeController : Controller
         
         return View(productList);
     }
-    public IActionResult Details(int id)
+    public IActionResult Details(int productId)
     {
         // Product product = _unitOfWork.Product.Get(u => u.Id == id, includeProperties: "Category");
-        Console.WriteLine(id);
-        ShoppingCart cart = new ShoppingCart
+        ShoppingCart cart = new ()
         {
-            Product = _unitOfWork.Product.Get(u => u.Id == id, includeProperties: "Category"),
+            Product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category"),
             Count = 1,
-            ProductId = id
+            ProductId = productId
         };
         return View(cart);
     }
