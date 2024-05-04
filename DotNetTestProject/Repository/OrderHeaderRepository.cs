@@ -26,7 +26,7 @@ public class OrderHeaderRepository : Repository<OrderHeader>,  IOrderHeaderRepos
         if (orderFromDb != null)
         {
             orderFromDb.OrderStatus = orderStatus;
-            if (string.IsNullOrEmpty(paymentStatus))
+            if (!string.IsNullOrEmpty(paymentStatus))
             {
                 orderFromDb.PaymentStatus = paymentStatus;
             }

@@ -162,7 +162,7 @@ public class CartController : Controller
     public IActionResult OrderConfirmation(int id)
     {
         OrderHeader orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == id, includeProperties: "ApplicationUser");
-        if (orderHeader.PaymentIntentId != SD.PaymentStatusDelayedPayment)
+        if (orderHeader.PaymentStatus != SD.PaymentStatusDelayedPayment)
         {
             var service = new SessionService();
             Session session = service.Get(orderHeader.SessionId);
