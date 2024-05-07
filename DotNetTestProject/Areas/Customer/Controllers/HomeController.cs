@@ -5,6 +5,7 @@ using DotNetTestProject.Models;
 using DotNetTestProject.Models.ViewModels;
 using DotNetTestProject.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
+using Utility;
 
 namespace DotNetTestProject.Areas.Customer.Controllers;
 
@@ -22,6 +23,15 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        var claimsIdentity = (ClaimsIdentity)User.Identity;
+        var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (claim != null)
+        {
+            var userId = claim.Value;
+            HttpContext.Session.SetInt32(SD.SessionCart, 
+                _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId).Count());
+        }
         IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category");
         
         return View(productList);
@@ -52,13 +62,14 @@ public class HomeController : Controller
         {
             cartFromDb.Count += shoppingCart.Count;
             _unitOfWork.ShoppingCart.Update(cartFromDb);
+            _unitOfWork.Save();
         }
         else
         {
             _unitOfWork.ShoppingCart.Add(shoppingCart);
-
+            _unitOfWork.Save();
         }
-        _unitOfWork.Save();
+        
         TempData["success"] = "Cart updated successfully";
         return RedirectToAction(nameof(Index));
     }

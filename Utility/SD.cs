@@ -18,4 +18,6 @@ public static class SD
     public const string PaymentStatusApproved = "Approved";
     public const string PaymentStatusDelayedPayment = "ApprovedForDeleydPayment";
     public const string PaymentStatusRejected = "Rejected";
+
+    public const string SessionCart = "SessionShopingCart";
 }

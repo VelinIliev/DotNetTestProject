@@ -4,6 +4,7 @@ using DotNetTestProject.Models.ViewModels;
 using DotNetTestProject.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Stripe.Checkout;
 using Utility;
 using SessionCreateOptions = Stripe.FinancialConnections.SessionCreateOptions;
@@ -173,6 +174,7 @@ public class CartController : Controller
                 _unitOfWork.OrderHeader.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
                 _unitOfWork.Save();
             }
+            HttpContext.Session.Clear();
         }
 
         List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart
@@ -197,6 +199,9 @@ public class CartController : Controller
         var cartFromDb = _unitOfWork.ShoppingCart.Get(x => x.Id == cartId);
         if (cartFromDb.Count <= 1)
         {
+            HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart
+                .GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
+            
             _unitOfWork.ShoppingCart.Remove(cartFromDb);
         }
         else
@@ -211,9 +216,14 @@ public class CartController : Controller
     public IActionResult Remove(int cartId)
     {
         var cartFromDb = _unitOfWork.ShoppingCart.Get(x => x.Id == cartId);
+        
+        HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart
+            .GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
+        
         _unitOfWork.ShoppingCart.Remove(cartFromDb);
         _unitOfWork.Save();
-
+        
+        
         return RedirectToAction(nameof(Index));
     }
     private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
